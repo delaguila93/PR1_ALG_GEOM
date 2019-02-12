@@ -5,6 +5,8 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
+import Util.*;
+import java.util.Random;
 
 class SaveIOException extends Exception {
 
@@ -32,7 +34,15 @@ public class PointCloud {
      * points.
      */
     public PointCloud(int tam) {
-        nubepuntos = new ArrayList<Point>(tam);
+        nubepuntos = new ArrayList<Point>();
+
+        RandomGen r = RandomGen.getInst();
+        r.setSeed(SeedGenerator.getInst().getSeed());
+
+        for (int i = 0; i < tam; i++) {
+            nubepuntos.add(new Point(r.nextInt( BasicGeom.RANGE) - (BasicGeom.RANGE/2), r.nextInt( BasicGeom.RANGE) - (BasicGeom.RANGE/2)));
+        }
+
     }
 
     /**
@@ -84,25 +94,72 @@ public class PointCloud {
         ArrayList<Integer> totales = new ArrayList<Integer>();
 
         int num = nubepuntos.size();
-        int suma=0;
-        for(int i=0;i< num;i++){
-            suma=0;
-            for(int j=0;j<num;j++){
-                suma+=nubepuntos.get(i).distance(nubepuntos.get(j));
+        int suma = 0;
+        for (int i = 0; i < num; i++) {
+            suma = 0;
+            for (int j = 0; j < num; j++) {
+                suma += nubepuntos.get(i).distance(nubepuntos.get(j));
             }
             totales.add(suma);
         }
         ArrayList<Integer> totalesAux = new ArrayList<Integer>(totales);
         Collections.sort(totales);
-        int pos=-1;
-        for(int r=0;r<totalesAux.size();r++){
-            if(totalesAux.get(r).equals(totales.get(0))){
-              pos = r;
-              break;
+        int pos = -1;
+        for (int r = 0; r < totalesAux.size(); r++) {
+            if (totalesAux.get(r).equals(totales.get(0))) {
+                pos = r;
+                break;
             }
         }
         return nubepuntos.get(pos);
 
     }
 
+    public Point yMaxPoint() {
+        Point punto = new Point();
+        double ymax = -9999;
+        for (Point p : nubepuntos) {
+            if (p.y > ymax) {
+                ymax = p.y;
+                punto.set(p.x, p.y);
+            }
+        }
+        return punto;
+    }
+
+    public Point yMinPoint() {
+        Point punto = new Point();
+        double ymin = 9999;
+        for (Point p : nubepuntos) {
+            if (p.y < ymin) {
+                ymin= p.y;
+                punto.set(p.x, p.y);
+            }
+        }
+        return punto;
+    }
+
+    public Point xMaxPoint() {
+        Point punto = new Point();
+        double xmax = -9999;
+        for (Point p : nubepuntos) {
+            if (p.x > xmax) {
+                xmax= p.x;
+                punto.set(p.x, p.y);
+            }
+        }
+        return punto;
+    }
+
+    public Point xMinPoint() {
+        Point punto = new Point();
+        double xmin = 9999;
+        for (Point p : nubepuntos) {
+            if (p.x < xmin) {
+                xmin = p.x;
+                punto.set(p.x, p.y);
+            }
+        }
+        return punto;
+    }
 }

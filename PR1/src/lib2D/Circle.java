@@ -1,7 +1,6 @@
 package lib2D;
 
 //import Util.BasicGeom;
-
 import java.util.ArrayList;
 
 //import java.util.ArrayList;
@@ -75,15 +74,17 @@ public class Circle {
      * Returns a polygon with the points that define the circle
      */
     public Polygon getPointsCircle() {
-        ArrayList<Vertex> vertices = new ArrayList();
-        Polygon c =new Polygon();
+
+        Polygon polig = new Polygon();
+        
         double heading = 0;
-        for (int a = 0; a < 360; a += 360 / NUMBER_SIDES) {
-            heading = a * Math.toRadians(a);
-            vertices.add(new Vertex(Math.cos(heading) * this.r, Math.sin(heading) * this.r,c));
+
+        for (int a = 0; a < 360; a+= 360/NUMBER_SIDES) {
+            heading = (a * BasicGeom.PI )/ 180;
+            polig.add((new Point((Math.cos(heading) * r) + c.x, (Math.sin(heading) * r) + c.y)));
         }
-         c.setVertexs(vertices);
-        return c;
+
+        return polig;
     }
 
     /**

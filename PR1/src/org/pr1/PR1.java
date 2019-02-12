@@ -35,13 +35,14 @@ public class PR1 extends Frame implements GLEventListener {
 
     // Geometric data in memory
     // Exercise A 
-
-
     SegmentLine s1;
     DrawSegment ds1;
-    
-    /*    PointCloud pc;
+
+    PointCloud pc;
     DrawPointCloud dc;
+
+    Circle cir;
+    DrawCircle dcir;
 
     RayLine r1;
     DrawRay dr1, dr2;
@@ -49,15 +50,11 @@ public class PR1 extends Frame implements GLEventListener {
     Line l1;
     DrawLine dl1;
 
-    Vector v1;
-    DrawVector dv1;
+
+    DrawPoint dp;
 
     Polygon pol;
     DrawPolygon dpol;
-
-    Circle cir;
-    DrawCircle dcir;*/
-
 
     public PR1(String title) {
         super(title);
@@ -131,57 +128,59 @@ public class PR1 extends Frame implements GLEventListener {
 
     protected void initExerciseA() throws Exception {
         RandomGen random = RandomGen.getInst();
-        /*pc = new PointCloud(POINT_CLOUD_VERT);
-        //pc = new PointCloud("logs/nube17.txt");
-        pc.save("nube17.txt");
+
+        pc = new PointCloud(30);
         dc = new DrawPointCloud(pc);
 
-        //Segments with 2 random points*/
-        s1 = new SegmentLine(new Point(0.0f,0.0f),new Point(50.0f,50.0f));
-        ds1 = new DrawSegment(s1);
-
-        /*//Ray with random points
+        //Ray with random points
         r1 = new RayLine(pc.getPoint(random.nextUInt() % POINT_CLOUD_VERT), pc.getPoint(random.nextUInt() % POINT_CLOUD_VERT));
         dr1 = new DrawRay(r1);
 
-        //Liney with random points
+        //Segment with random points
+        s1 = new SegmentLine(pc.getPoint(random.nextUInt() % POINT_CLOUD_VERT), pc.getPoint(random.nextUInt() % POINT_CLOUD_VERT));
+        ds1 = new DrawSegment(s1);
+
+        //Line with random points
         l1 = new Line(pc.getPoint(random.nextUInt() % POINT_CLOUD_VERT), pc.getPoint(random.nextUInt() % POINT_CLOUD_VERT));
         dl1 = new DrawLine(l1);
 
-        // Polygon
-        ArrayList< Point> coord = new ArrayList< Point>();
-        GeomMethods.get4Corners(coord, pc);
-        pol = GeomMethods.create4Polygon(coord.get(0), coord.get(1), coord.get(2), coord.get(3));
-        dpol = new DrawPolygon(pol);
-
         //Circle located at the most central point
         Point center = pc.centralPoint();
-        cir = new Circle(center, 20);
-        dcir = new DrawCircle(cir);*/
+        Point p = new Point(pc.getPoint(random.nextUInt() % POINT_CLOUD_VERT));
+        dp = new DrawPoint(center);
+        
+        cir = new Circle(center, center.distance(p));
+        dcir = new DrawCircle(cir);
+        
+        pol = new Polygon();
+        pol.add(pc.xMaxPoint());
+        pol.add(pc.yMaxPoint());
+        pol.add(pc.xMinPoint());
+        pol.add(pc.yMinPoint());
+        dpol = new DrawPolygon(pol);
     }
 
     protected void drawExerciseA() {
-        /*dpol.drawObjectC(gl, 0.5f, 0.5f, 0.5f);
-        dcir.drawObjectC(gl, 0.3f, 0.7f, 0.5f);*/
-        ds1.drawObjectC(gl, 1.0f, 0.5f, 0.5f);
-       /* dr1.drawObjectC(gl, 1.0f, 1.0f, 1.0f);
+        
+
+        dc.drawObjectC(gl, 1.0f, 0.0f, 0.5f);
         dl1.drawObjectC(gl, 0.0f, 1.0f, 1.0f);
-        dc.drawObjectC(gl, 1.0f, 0.0f, 0.5f);*/
+        ds1.drawObjectC(gl, 1.0f, 0.5f, 0.5f);
+        dr1.drawObjectC(gl, 1.0f, 1.0f, 1.0f);
+        dcir.drawObjectC(gl, 0.3f, 0.7f, 0.5f);
+        dp.drawObjectC(gl, 0.6f,0.6f,0.6f);
+        dpol.drawObjectC(gl, 0.5f, 0.5f, 0.5f);//Falta incluir el punto
     }
 
-    
     protected void initExerciseB() {
         ///XXXX
 
     }
 
-  
-    
     protected void drawExerciseB() {
         //XXXXXX
     }
 
-     
     // called once for OpenGL initialization
     public void init(GLAutoDrawable drawable) {
 
@@ -260,7 +259,6 @@ public class PR1 extends Frame implements GLEventListener {
             drawExerciseB();
         }
          */
-
         gl.glFlush();
     }
 
@@ -277,5 +275,3 @@ public class PR1 extends Frame implements GLEventListener {
         frame.setVisible(true);
     }
 }
-
-

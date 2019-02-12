@@ -23,24 +23,35 @@ public class DrawLine extends Draw {
         // screen coordiantes
         double ax, ay, bx, by;
         double m = vl.slope();
-        double c = vl.getC();
+        double t = 80;
+        Point v = new Point();
         if (m < BasicGeom.INFINITY) { //intersects with the lateral canvas
-
-            //XXXXX
+            v.x = vl.getB().x - vl.getA().x;
+            v.y = vl.getB().y - vl.getA().y;
         } else {
 
-           //XXXXX
+            //XXXXX
         }
+        ax = convCoordX(vl.getA().x);
+        ay = convCoordY(vl.getA().y);
+        bx = convCoordX(vl.getA().x + (t * v.x));
+        by = convCoordY(vl.getA().y + (t * v.y));
 
-//        ax = convCoordX(ax);
-//        ay = convCoordX(ay);
-//        bx = convCoordX(bx);
-//        by = convCoordX(by);
-//
-//        g.glBegin(GL.GL_LINES);
-//        g.glVertex2d(ax, ay);
-//        g.glVertex2d(bx, by); //the fourth (w) component is zero!
-//        g.glEnd();
+        g.glBegin(GL.GL_LINES);
+        g.glVertex2d(ax, ay);
+        g.glVertex2d(bx, by); //the fourth (w) component is zero!
+        g.glEnd();
+        
+        
+        ax = convCoordX(vl.getA().x);
+        ay = convCoordY(vl.getA().y);
+        bx = convCoordX(vl.getA().x + (-t * v.x));
+        by = convCoordY(vl.getA().y + (-t * v.y));
+
+        g.glBegin(GL.GL_LINES);
+        g.glVertex2d(ax, ay);
+        g.glVertex2d(bx, by); //the fourth (w) component is zero!
+        g.glEnd();
 
     }
 

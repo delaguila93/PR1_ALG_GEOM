@@ -20,30 +20,37 @@ public class DrawPolygon extends Draw {
     @Override
     public void drawObject(GL g) {
         
-        //int tama = vp.vertexSize();
+        int tama = vp.vertexSize();
 
         g.glBegin(GL.GL_POLYGON);
-        // iterate through the vertices
+        for (int i = 0; i < tama; i++) {
+            float sy = convCoordY(vp.getVertexAt(i).getY());
+            float sx = convCoordX(vp.getVertexAt(i).getX());
+            g.glVertex2f(sx, sy);
+        }
         g.glEnd();
+
 
     }
 
     public void drawObjectLine(GL g) {
         
-        //int tama = vp.vertexSize();
+        int tama = vp.vertexSize();
 
         g.glBegin(GL.GL_LINE_LOOP);
-        // iterate through the vertices
+        for (int i = 0; i < tama; i++) {
+            float sy = convCoordY(vp.getVertexAt(i).getY());
+            float sx = convCoordX(vp.getVertexAt(i).getX());
+            g.glVertex2f(sx, sy);
+        }
         g.glEnd();
 
     }
     
     @Override
     public void drawObjectC(GL g, float R, float G, float B) {
-
         g.glColor3f(R, G, B);
-        drawObject(g);
-
+        drawObjectLine(g);
     }
 
 }
