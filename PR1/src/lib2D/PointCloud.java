@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
 
 class SaveIOException extends Exception {
 
@@ -27,17 +28,30 @@ public class PointCloud {
     }
 
     /**
-     * Constructor of the point cloud of random form giving the total number of points.
+     * Constructor of the point cloud of random form giving the total number of
+     * points.
      */
     public PointCloud(int tam) {
-        //XXXXX
+        nubepuntos = new ArrayList<Point>(tam);
     }
 
     /**
-     * Constructor of the point cloud from the coordinates of points stored in file
+     * Constructor of the point cloud from the coordinates of points stored in
+     * file
      */
-    public PointCloud(String nombre) throws ReadIOException {
-        //XXXXX
+    public PointCloud(String nombre) throws ReadIOException, FileNotFoundException, IOException {
+        nubepuntos = new ArrayList();
+        Point punto;
+        String cadena[];
+        String cad;
+        FileReader f = new FileReader(nombre);
+        BufferedReader b = new BufferedReader(f);
+        while ((cad = b.readLine()) != null) {
+            cadena = cad.split(" ");
+            punto = new Point(Double.parseDouble(cadena[0]), Double.parseDouble(cadena[1]));
+            nubepuntos.add(punto);
+        }
+        b.close();
     }
 
     public void addPoint(Point p) {
@@ -49,25 +63,46 @@ public class PointCloud {
     }
 
     /**
-     * Saves the cloud of points in file with the same format used by the constructor
+     * Saves the cloud of points in file with the same format used by the
+     * constructor
      */
     public void save(String nombre) throws SaveIOException {
         //XXXXX
     }
-    
+
     public Point getPoint(int pos) {
         if ((pos >= 0) && (pos < nubepuntos.size())) {
             return nubepuntos.get(pos);
         }
         return null;
     }
-    
+
     /**
      * Returns the more central existing point in the cloud
      */
     public Point centralPoint() {
-        //XXXXX
-        return new Point();
+        ArrayList<Integer> totales = new ArrayList<Integer>();
+
+        int num = nubepuntos.size();
+        int suma=0;
+        for(int i=0;i< num;i++){
+            suma=0;
+            for(int j=0;j<num;j++){
+                suma+=nubepuntos.get(i).distance(nubepuntos.get(j));
+            }
+            totales.add(suma);
+        }
+        ArrayList<Integer> totalesAux = new ArrayList<Integer>(totales);
+        Collections.sort(totales);
+        int pos=-1;
+        for(int r=0;r<totalesAux.size();r++){
+            if(totalesAux.get(r).equals(totales.get(0))){
+              pos = r;
+              break;
+            }
+        }
+        return nubepuntos.get(pos);
+
     }
 
 }

@@ -2,6 +2,8 @@ package lib2D;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -98,6 +100,10 @@ public class Polygon {
             return null;
         }
     }
+    
+    public void setVertexs(ArrayList<Vertex> v){
+        this.Vertexs = v;
+    }
 
     public int vertexSize() {
         return nVertexs;
@@ -110,20 +116,35 @@ public class Polygon {
     /**
      * Polygon builder from file
      */
-    public Polygon(String nombre) throws ReadIOException {
-        //XXXXX
+    public Polygon(String nombre) throws ReadIOException, FileNotFoundException, IOException {
 
+        Vertexs = new ArrayList();
+        Point punto;
+        Vertex vert;
+        String cadena[];
+        String cad;
+        FileReader f = new FileReader(nombre);
+        BufferedReader b = new BufferedReader(f);
+        while ((cad = b.readLine()) != null) {
+            cadena = cad.split(" ");
+            punto = new Point(Double.parseDouble(cadena[0]), Double.parseDouble(cadena[1]));
+            vert = new Vertex(punto);
+            Vertexs.add(vert);
+        }
+        b.close();
     }
 
     /**
-     * Saves the coordinates of the polygon in file with the same format as the constructor
+     * Saves the coordinates of the polygon in file with the same format as the
+     * constructor
      */
     public void save(String nombre) throws SaveIOException {
         //XXXXX
     }
 
     /**
-     * Assuming that this is a convex polygon, indicate if the point p is inside the polygon
+     * Assuming that this is a convex polygon, indicate if the point p is inside
+     * the polygon
      */
     public boolean pointInCovexPolygon(Point pt) {
 
@@ -132,7 +153,11 @@ public class Polygon {
     }
 
     public boolean convex() {
-       //XXXXX
+        for (int i = 0; i < nVertexs; i++) {
+            if (!getVertexAt(i).convex()) {
+                return false;
+            }
+        }
         return true;
     }
 
@@ -146,7 +171,6 @@ public class Polygon {
         
         return false;
     }*/
-
     public boolean intersects(SegmentLine r, Vector interseccion) {
         //XXXXX
         return false;

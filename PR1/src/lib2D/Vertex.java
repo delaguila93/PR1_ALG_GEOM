@@ -92,16 +92,13 @@ public class Vertex extends Point {
 
     boolean convex() {
 
-        //XXXXX
-        
-        return true;
-
+        Vertex iPlus1 = new Vertex(next());
+        Vertex iMinus1 = new Vertex(previous());
+        return iPlus1.left(iMinus1, this);
     }
 
     boolean concave() {
-
-        //XXXXX
-        return false;
+        return !convex();
     }
 
     /**
@@ -110,35 +107,34 @@ public class Vertex extends Point {
      */
     public Vertex next() {
 
-        //XXXXX
-        return new Vertex();
-       
+        int posPlus1 = (position + 1) % polig.nVertexs;
+        return polig.getVertexAt(posPlus1);
     }
 
     /**
      * Next vertex in clockwise order
      */
     public Vertex previous() {
-
-        //XXXXX
-        return new Vertex();
+        int sizePolig = polig.vertexSize();
+        int posPlus = (position - 1 + sizePolig) % sizePolig;
+        return polig.getVertexAt(posPlus);
     }
 
     /**
      * Next edge in counter-clockwise order
      */
     public SegmentLine nextEdge() {
-        //XXXXX
-        return new SegmentLine();
+        int posPlus1 = (position + 1) % polig.nVertexs;
+        return polig.getEdge(posPlus1);
     }
 
     /**
      * Next edge in clockwise order
      */
     public SegmentLine previousEdge() {
-        //XXXXX
-        return new SegmentLine();
-        
+        int sizePolig = polig.vertexSize();
+        int posPlus = (position - 1 + sizePolig) % sizePolig;
+        return polig.getEdge(posPlus);
     }
 
     @Override

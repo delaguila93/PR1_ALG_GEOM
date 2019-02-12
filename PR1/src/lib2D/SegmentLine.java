@@ -1,7 +1,5 @@
 package lib2D;
 
-
-
 /**
  * Class that represents a segment line defined by two points
  */
@@ -40,7 +38,8 @@ public class SegmentLine {
     }
 
     /**
-     * Returns the area formed by the triangle composed of the current SegmentLine and the union of its bounds with p
+     * Returns the area formed by the triangle composed of the current
+     * SegmentLine and the union of its bounds with p
      */
     public double triangleArea2(Point p) {
         return p.triangleArea2(a, b);
@@ -79,16 +78,14 @@ public class SegmentLine {
      * Determines whether a segment is horizontal or not (use BasicGeom.CERO)
      */
     public boolean isHorizontal() {
-        //XXXX
-        return true;
+        return Math.abs(a.y - b.y) < BasicGeom.ZERO;
     }
 
     /**
      * Determines whether or not a segment is vertical (use BasicGeom.CERO)
      */
     public boolean isVertical() {
-        //XXXXXX
-        return false; 
+        return Math.abs(a.x - b.x) < BasicGeom.ZERO;
     }
 
     /**
@@ -99,11 +96,13 @@ public class SegmentLine {
     }
 
     /**
-     * It obtains the point belonging to the segment or colineal to it for a concrete t in the parametric equation: result = a + t (b-a)
+     * It obtains the point belonging to the segment or colineal to it for a
+     * concrete t in the parametric equation: result = a + t (b-a)
      */
     Point getPoint(double t) throws Invalid_T_Parameter {
-        //XXXXX
-        return new Point();
+
+        Point sub = new Point(b.minus(a));
+        return new Point(a.x + t * sub.x, a.y + t * sub.y);
     }
 
     public Point getA() {
@@ -115,44 +114,58 @@ public class SegmentLine {
     }
 
     /**
-     * Returns the slope of the implied straight line equation: m = (yb-ya) / (xb-xa)
+     * Returns the slope of the implied straight line equation: m = (yb-ya) /
+     * (xb-xa)
      */
     public double slope() {
-        return 0.0;
-        //XXXXXX
+        if (Math.abs(b.x - a.x) < BasicGeom.ZERO) {
+            return BasicGeom.INFINITY;
+        } else {
+            return (b.y - a.y) / (b.x - a.x);
+        }
+
     }
 
     /**
-     * Returns the constant of the equation of the implied line: c = y-mx (use BasicGeom.INFINITO)
+     * Returns the constant of the equation of the implied line: c = y-mx (use
+     * BasicGeom.INFINITO)
      */
     public double getC() {
 
-        //XXXXXX
-        return 0.0;
+        double m = slope();
+        if(m == BasicGeom.INFINITY){
+           return BasicGeom.INFINITY; 
+        }else{
+            return a.y - (m * a.x);
+        }
+        
     }
 
     /**
-     * Determines whether two segments intersect improperly, that is, when one end of a segment is contained in the other. Use integer arithmetic.     
+     * Determines whether two segments intersect improperly, that is, when one
+     * end of a segment is contained in the other. Use integer arithmetic.
      */
     public boolean impSegmentIntersection(SegmentLine l) {
 
-        //XXXX
-        return true;
-
+        Point c = l.a;
+        Point d = l.b;
+        if (a.colinear(c, d) || b.colinear(c, d) || c.colinear(a, b) || d.colinear(a, b)) {
+            return false;
+        } else {
+            return (a.left(c, d) ^ b.left(c, d) && c.left(a, b) ^ d.left(a, b));
+        }
     }
 
     /**
-     * Determines whether two segments intersect in their own way, that is, when they intersect completely. Use only arithmetic  
+     * Determines whether two segments intersect in their own way, that is, when
+     * they intersect completely. Use only arithmetic
      */
     public boolean segmentIntersection(SegmentLine l) {
 
-        //XXXX
-        
-        return false; 
+        return (b.classify(l.a, l.b) == PointClassification.BETWEEN) || (a.classify(l.a, l.b) == PointClassification.BETWEEN);
 
     }
 
-    
     /**
      * Muestra en pantalla la informacion del SegmentLine.
      */
