@@ -40,7 +40,7 @@ public class PointCloud {
         r.setSeed(SeedGenerator.getInst().getSeed());
 
         for (int i = 0; i < tam; i++) {
-            nubepuntos.add(new Point(r.nextInt( BasicGeom.RANGE) - (BasicGeom.RANGE/2), r.nextInt( BasicGeom.RANGE) - (BasicGeom.RANGE/2)));
+            nubepuntos.add(new Point(r.nextInt( 2*BasicGeom.RANGE) - (2*BasicGeom.RANGE/2), r.nextInt( 2*BasicGeom.RANGE) - (2*BasicGeom.RANGE/2)));
         }
 
     }
@@ -76,8 +76,16 @@ public class PointCloud {
      * Saves the cloud of points in file with the same format used by the
      * constructor
      */
-    public void save(String nombre) throws SaveIOException {
-        //XXXXX
+    public void save(String nombre) throws SaveIOException, IOException {
+        FileWriter r = new FileWriter(nombre);
+        BufferedWriter b = new BufferedWriter(r);
+        for(Point p:nubepuntos){
+            b.write(Double.toString(p.x));
+            b.write(" ");
+            b.write(Double.toString(p.y));
+            b.newLine();
+        }
+        b.close();
     }
 
     public Point getPoint(int pos) {

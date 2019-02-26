@@ -17,6 +17,7 @@ public class DrawPoint extends Draw {
         return vp;
     }
 
+    
     @Override
     public void drawObject(GL g) {
 

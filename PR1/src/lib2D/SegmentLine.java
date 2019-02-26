@@ -100,9 +100,8 @@ public class SegmentLine {
      * concrete t in the parametric equation: result = a + t (b-a)
      */
     Point getPoint(double t) throws Invalid_T_Parameter {
-
-        Point sub = new Point(b.minus(a));
-        return new Point(a.x + t * sub.x, a.y + t * sub.y);
+        Point sub = new Point(a.minus(b));
+        return new Point(a.x + (t * sub.x), a.y + (t * sub.y));
     }
 
     public Point getA() {
@@ -133,12 +132,12 @@ public class SegmentLine {
     public double getC() {
 
         double m = slope();
-        if(m == BasicGeom.INFINITY){
-           return BasicGeom.INFINITY; 
-        }else{
+        if (m == BasicGeom.INFINITY) {
+            return BasicGeom.INFINITY;
+        } else {
             return a.y - (m * a.x);
         }
-        
+
     }
 
     /**
@@ -164,6 +163,91 @@ public class SegmentLine {
 
         return (b.classify(l.a, l.b) == PointClassification.BETWEEN) || (a.classify(l.a, l.b) == PointClassification.BETWEEN);
 
+    }
+
+    protected boolean intersect(Vector c, Vector d, DoubleType t, DoubleType s) {
+
+        double num1 = ((d.x - c.x) * (c.y - a.y)) - ((c.x - a.x) * (d.y - c.y));
+        double num2 = ((b.x - a.x) * (c.y - a.y)) - ((c.x - a.x) * (b.y - a.y));
+        double det1 = ((d.x - c.x) * (b.y - a.y)) - ((b.x - a.x) * (d.y - c.y));
+        double det2 = ((d.x - c.x) * (b.y - a.y)) - ((b.x - a.x) * (d.y - c.y));
+
+        if (det1 < BasicGeom.ZERO || det2 < BasicGeom.ZERO) {
+            return false;
+        } else {
+            s.setV(num1 / det1);
+            t.setV(num2 / det2);
+            return true;
+        }
+    }
+
+    public boolean intersect(Line r, Vector intersec) {
+        DoubleType s = new DoubleType();
+        DoubleType t = new DoubleType();
+        Vector c = new Vector(r.a);
+        Vector d = new Vector(r.b);
+        this.intersect(c, d, t, s);
+        if ((s.getV() >= 0 || s.getV() <= 1)) {
+            intersec.x = a.x + s.getV() * (b.x - a.x);
+            intersec.y = a.y + s.getV() * (b.y - a.y);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean intersect(RayLine r, Vector intersec) {
+        DoubleType s = new DoubleType();
+        DoubleType t = new DoubleType();
+        Vector c = new Vector(r.a);
+        Vector d = new Vector(r.b);
+        this.intersect(c, d, t, s);
+
+        if ((s.getV() <= 0 || s.getV() >= 1) && t.getV() <= 0) {
+            intersec.x = a.x + s.getV() * (b.x - a.x);
+            intersec.y = a.y + s.getV() * (b.y - a.y);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean intersect(SegmentLine r, Vector intersec) {
+        DoubleType s = new DoubleType();
+        DoubleType t = new DoubleType();
+        Vector c = new Vector(r.a);
+        Vector d = new Vector(r.b);
+        this.intersect(c, d, t, s);
+        if ((s.getV() <= 0 || s.getV() >= 1) && (t.getV() <= 0 || t.getV() >= 1)) {
+            intersec.x = a.x + s.getV() * (b.x - a.x);
+            intersec.y = a.y + s.getV() * (b.y - a.y);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public double distance(Vector p) {
+
+        Vector d = new Vector(this.a.minus(b));
+        double t0 = (d.dot(new Vector (p.minus(a)))) / (d.dot(d));
+
+        double dist = 0;
+        if (t0 <= 0) {
+            Vector distance = new Vector(p.minus(a));
+            dist = distance.getModule();
+        } else if (t0 > 0 && t0 < 1) {
+            d = d.scalarMult(t0);
+            Vector c = new Vector(this.a);
+            Vector sum = new Vector(c.add(d));
+            Vector distance = new Vector(p.minus(sum));
+            dist = distance.getModule();
+        } else if (t0 >= 1) {
+            Vector c = new Vector(this.a);
+            Vector distance = new Vector(p.minus(c.add(d)));
+            dist = distance.getModule();
+        }
+        return dist;
     }
 
     /**

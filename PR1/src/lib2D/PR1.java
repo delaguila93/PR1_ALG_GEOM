@@ -1,4 +1,4 @@
-package org.pr1;
+package lib2D;
 
 import lib2D.*;
 import com.sun.opengl.util.Animator;
@@ -14,10 +14,7 @@ import javax.media.opengl.glu.GLU;
 
 /**
  * PR1.java <BR>
- * author: Brian Paul (converted to Java by Ron Cemer and Sven Goethel)
- * <P>
- *
- * This version is equal to Brian Paul's version 1.2 1999/10/21
+ * author: Jose Maria del Aguila
  */
 public class PR1 extends Frame implements GLEventListener {
 
@@ -50,11 +47,35 @@ public class PR1 extends Frame implements GLEventListener {
     Line l1;
     DrawLine dl1;
 
-
     DrawPoint dp;
 
     Polygon pol;
     DrawPolygon dpol;
+
+    //Exercise B
+    Point pB;
+    DrawPoint drpB;
+
+    Circle circleB;
+    DrawCircle drcrclB;
+
+    Circle secantCircle;
+    DrawCircle drSecant;
+
+    Circle tangentCircle;
+    DrawCircle drTangent;
+
+    SegmentLine segB;
+    DrawSegment drsgB;
+
+    RayLine rayB;
+    DrawRay drrB;
+
+    Line lnB;
+    DrawLine drlB;
+    
+    PointCloud pcResults;
+    DrawPointCloud drPointCloud;
 
     public PR1(String title) {
         super(title);
@@ -103,10 +124,14 @@ public class PR1 extends Frame implements GLEventListener {
                         clock = e.getWhen();
                         break;
                     case 'a':
+                        exercise = A;
+                        break;
                     case 'A':
                         exercise = A;
                         break;
                     case 'b':
+                        exercise = B;
+                        break;
                     case 'B':
                         exercise = B;
                         break;
@@ -132,6 +157,8 @@ public class PR1 extends Frame implements GLEventListener {
         pc = new PointCloud(30);
         dc = new DrawPointCloud(pc);
 
+        pc.save("datosNube.txt");
+
         //Ray with random points
         r1 = new RayLine(pc.getPoint(random.nextUInt() % POINT_CLOUD_VERT), pc.getPoint(random.nextUInt() % POINT_CLOUD_VERT));
         dr1 = new DrawRay(r1);
@@ -148,37 +175,131 @@ public class PR1 extends Frame implements GLEventListener {
         Point center = pc.centralPoint();
         Point p = new Point(pc.getPoint(random.nextUInt() % POINT_CLOUD_VERT));
         dp = new DrawPoint(center);
-        
+
         cir = new Circle(center, center.distance(p));
         dcir = new DrawCircle(cir);
-        
+
         pol = new Polygon();
         pol.add(pc.xMaxPoint());
         pol.add(pc.yMaxPoint());
         pol.add(pc.xMinPoint());
         pol.add(pc.yMinPoint());
+
+        Point p1 = new Point(pc.getPoint(random.nextUInt() % POINT_CLOUD_VERT));
+        for (int i = 0; i < pol.vertexSize(); i++) {
+            if (p1.left(pol.getEdge(i).getA(), pol.getEdge(i).getB())) {
+                pol.addPosition(i + 1, p1);
+                break;
+            }
+        }
+
         dpol = new DrawPolygon(pol);
     }
 
     protected void drawExerciseA() {
-        
-
         dc.drawObjectC(gl, 1.0f, 0.0f, 0.5f);
         dl1.drawObjectC(gl, 0.0f, 1.0f, 1.0f);
         ds1.drawObjectC(gl, 1.0f, 0.5f, 0.5f);
         dr1.drawObjectC(gl, 1.0f, 1.0f, 1.0f);
         dcir.drawObjectC(gl, 0.3f, 0.7f, 0.5f);
-        dp.drawObjectC(gl, 0.6f,0.6f,0.6f);
-        dpol.drawObjectC(gl, 0.5f, 0.5f, 0.5f);//Falta incluir el punto
+        dp.drawObjectC(gl, 0.6f, 0.6f, 0.6f);
+        dpol.drawObjectC(gl, 0.5f, 0.5f, 0.5f);
     }
 
-    protected void initExerciseB() {
-        ///XXXX
+    protected void initExerciseB() throws SegmentLine.Invalid_T_Parameter {
+        
+        pcResults = new PointCloud();
+        drPointCloud = new DrawPointCloud(pcResults);
 
+        //Apartado A
+        lnB = new Line(new Point(40.0f, 70.0), new Point(-40.f, 70.0f)); // A
+        drlB = new DrawLine(lnB);
+
+        rayB = new RayLine(new Point(-60.0f, -30.0), new Point(0.f, 20.0f)); // B
+        drrB = new DrawRay(rayB);
+
+        circleB = new Circle(new Point(0.0f, 0.0f), 30); // C
+        drcrclB = new DrawCircle(circleB);
+
+        segB = new SegmentLine(new Point(30f, 60.0), new Point(30.f, -60.0f)); // D
+        drsgB = new DrawSegment(segB);
+
+        pB = new Point(-50.0f, 50.0f);
+        drpB = new DrawPoint(pB);
+
+        //Apartado B
+        System.out.println("Distancia de P-A: " + lnB.distance(new Vector(pB.getX(), pB.getY())));
+        System.out.println("Distancia de P-B: " + rayB.distPointRay(new Vector(pB.getX(), pB.getY())));
+        System.out.println("Distancia de P-D: " + segB.distance(new Vector(pB.getX(), pB.getY())));
+
+        //Apartado C
+        Vector inters1 = new Vector();
+        Vector inters2 = new Vector();
+        if (lnB.intersect(rayB, inters1)) {
+            System.out.println("Punto de inerseccion A - B: " + inters1.getX() + " " + inters1.getY());
+            pcResults.addPoint(new Point(inters1.getX(),inters1.getY()));
+        }
+        if (circleB.intersects(lnB, inters1, inters2) == Circle.RelationCircleLine.INTERSECTS) {
+            System.out.println("Punto de inerseccion A - C: " + inters1.getX() + " " + inters1.getY());
+            pcResults.addPoint(new Point(inters1.getX(),inters1.getY()));
+        }
+        if (lnB.intersect(segB, inters1)) {
+            System.out.println("Punto de inerseccion A - D: " + inters1.getX() + " " + inters1.getY());
+            pcResults.addPoint(new Point(inters1.getX(),inters1.getY()));
+        }
+        if (circleB.intersects(rayB, inters1, inters2) != Circle.RelationCircleLine.NO_INTERSECTS) {
+            if (circleB.intersects(rayB, inters1, inters2) == Circle.RelationCircleLine.TANGENTS) {
+                System.out.println("Punto de inerseccion B - C: " + inters1.getX() + " " + inters1.getY());
+                pcResults.addPoint(new Point(inters1.getX(),inters1.getY()));
+            } else {
+                System.out.println("Punto de inerseccion B - C: " + inters1.getX() + " " + inters1.getY());
+                System.out.println("Punto de inerseccion B - C: " + inters2.getX() + " " + inters2.getY());
+                pcResults.addPoint(new Point(inters1.getX(),inters1.getY()));
+                pcResults.addPoint(new Point(inters2.getX(),inters2.getY()));
+            }
+        }
+        if (rayB.intersect(segB, inters1)) {
+            System.out.println("Punto de inerseccion B - D: " + inters1.getX() + " " + inters1.getY());
+            pcResults.addPoint(new Point(inters1.getX(),inters1.getY()));
+        }
+
+        if (circleB.intersects(segB, inters1, inters2) != Circle.RelationCircleLine.NO_INTERSECTS) {
+            if (circleB.intersects(segB, inters1, inters2) == Circle.RelationCircleLine.TANGENTS) {
+                System.out.println("Punto de inerseccion C - D: " + inters1.getX() + " " + inters1.getY());
+                pcResults.addPoint(new Point(inters1.getX(),inters1.getY()));
+            } else {
+                System.out.println("Punto de inerseccion C - D: " + inters1.getX() + " " + inters1.getY());
+                System.out.println("Punto de inerseccion C - D: " + inters2.getX() + " " + inters2.getY());
+                pcResults.addPoint(new Point(inters1.getX(),inters1.getY()));
+                pcResults.addPoint(new Point(inters2.getX(),inters2.getY()));
+            }
+        }
+        // Apartado D
+        secantCircle = new Circle(new Point(27.5f, 0.0f), 10);
+        drSecant = new DrawCircle(secantCircle);
+
+        if (circleB.circleRelation(secantCircle) == Circle.RelationCircles.SECANT) {
+            System.out.println("Es secante");
+        }
+
+        tangentCircle = new Circle(new Point(-20.0f, 0.0f), 10);
+        drTangent = new DrawCircle(tangentCircle);
+
+        if (circleB.circleRelation(tangentCircle) == Circle.RelationCircles.INNER_TANG) {
+            System.out.println("Es tangente");
+        }
     }
 
     protected void drawExerciseB() {
-        //XXXXXX
+        drcrclB.drawObjectC(gl, 0.3f, 0.7f, 0.5f);
+        drsgB.drawObjectC(gl, 1.0f, 0.5f, 0.5f);
+        drlB.drawObjectC(gl, 0.0f, 1.0f, 1.0f);
+        drrB.drawObjectC(gl, 1.0f, 1.0f, 1.0f);
+        drpB.drawObjectC(gl, 0.5f, 0.5f, 0.5f);
+        drSecant.drawObjectC(gl, 0.7f, 0.7f, 0.5f);
+        drTangent.drawObjectC(gl, 0.3f, 0.1f, 0.5f);
+        
+        drPointCloud.drawObjectC(gl, 0.1f, 0.1f, 1.0f);
     }
 
     // called once for OpenGL initialization
@@ -200,7 +321,7 @@ public class PR1 extends Frame implements GLEventListener {
         try {
 
             initExerciseA();
-            //initExerciseB();
+            initExerciseB();
 
         } catch (Exception ex) {
             System.out.println("Error en el dibujado");
@@ -254,11 +375,10 @@ public class PR1 extends Frame implements GLEventListener {
             drawExerciseA();
         }
 
-        /*
         if (exercise == B) {
             drawExerciseB();
         }
-         */
+
         gl.glFlush();
     }
 

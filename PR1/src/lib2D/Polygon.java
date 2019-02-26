@@ -1,6 +1,7 @@
 package lib2D;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -100,8 +101,8 @@ public class Polygon {
             return null;
         }
     }
-    
-    public void setVertexs(ArrayList<Vertex> v){
+
+    public void setVertexs(ArrayList<Vertex> v) {
         this.Vertexs = v;
     }
 
@@ -113,6 +114,8 @@ public class Polygon {
         return new SegmentLine(getVertexAt(i), getVertexAt((i + 1) % nVertexs));
     }
 
+    
+    
     /**
      * Polygon builder from file
      */
@@ -138,14 +141,29 @@ public class Polygon {
      * Saves the coordinates of the polygon in file with the same format as the
      * constructor
      */
-    public void save(String nombre) throws SaveIOException {
-        //XXXXX
+    public void save(String nombre) throws SaveIOException, FileNotFoundException, IOException {
+        FileWriter r = new FileWriter(nombre);
+        BufferedWriter b = new BufferedWriter(r);
+        for(Point p:Vertexs){
+            b.write(Double.toString(p.x));
+            b.write(" ");
+            b.write(Double.toString(p.y));
+            b.newLine();
+        }
+        b.close();
     }
 
     /**
      * Assuming that this is a convex polygon, indicate if the point p is inside
      * the polygon
      */
+    
+    public void addPosition(int i,Point p){
+        Vertex v = new Vertex(p, this, nVertexs);
+        Vertexs.add(i, v);
+        nVertexs++;
+    }
+    
     public boolean pointInCovexPolygon(Point pt) {
 
         //XXXXX
@@ -161,18 +179,56 @@ public class Polygon {
         return true;
     }
 
-    /*public boolean intersects(Line r, Vector interseccion) {
-        //XXXXX
+    public boolean intersects(Line r, Vector interseccion) {
+        DoubleType s = new DoubleType();
+        DoubleType t = new DoubleType();
+        Vector c = new Vector(r.a);
+        Vector d = new Vector(r.b);
+
+        for (int i = 0; i < nVertexs; i++) {
+            this.getEdge(i).intersect(c, d, t, s);
+            if ((s.getV() >= 0 && s.getV() <= 1)) {
+                interseccion.x = c.x + t.getV() * (d.x - c.x);
+                interseccion.y = c.y + t.getV() * (d.y - c.y);
+                return true;
+            }
+        }
         return false;
     }
 
     public boolean intersects(RayLine r, Vector interseccion) {
-        //XXXXX
-        
+        DoubleType s = new DoubleType();
+        DoubleType t = new DoubleType();
+        Vector c = new Vector(r.a);
+        Vector d = new Vector(r.b);
+        for (int i = 0; i < Vertexs.size(); i++) {
+            this.getEdge(i).intersect(c, d, t, s);
+            System.out.println(s.getV() + " " + t.getV());
+            if ((s.getV() >= 0 && s.getV() <= 1) && 0 <= t.getV()) {
+                interseccion.x = c.x + t.getV() * (d.x - c.x);
+                interseccion.y = c.y + t.getV() * (d.y - c.y);
+
+                return true;
+            }
+
+        }
         return false;
-    }*/
+    }
+
     public boolean intersects(SegmentLine r, Vector interseccion) {
-        //XXXXX
+        DoubleType s = new DoubleType();
+        DoubleType t = new DoubleType();
+        Vector c = new Vector(r.a);
+        Vector d = new Vector(r.b);
+
+        for (int i = 0; i < Vertexs.size(); i++) {
+            this.getEdge(i).intersect(c, d, t, s);
+            if ((s.getV() <= 0 && s.getV() >= 1) && (t.getV() <= 0 && t.getV() >= 1)) {
+                interseccion.x = c.x + t.getV() * (d.x - c.x);
+                interseccion.y = c.y + t.getV() * (d.y - c.y);
+                return true;
+            }
+        }
         return false;
     }
 

@@ -80,6 +80,7 @@ public class Point {
         return sqrt(pow(this.x, 2) + pow(this.y, 2));
     }
 
+    // B - A
     public Point minus(Point p) {
         Point a = new Point();
         a.x = p.getX() - this.x;
@@ -233,6 +234,10 @@ public class Point {
     public double slope(Point p) {
 
         return (this.y - p.y) / (this.x - p.x);
+    }
+    
+    public Vector convert(double x,double y){
+        return new Vector(x,y);
     }
 
     /**
