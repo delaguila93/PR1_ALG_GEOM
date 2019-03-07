@@ -24,4 +24,14 @@ abstract public class BasicGeom {
         return (a > b ? (a > c ? a : c) : (b > c ? b : c));
     }
 
+    public static double determinant2x2(double a, double b, double c, double d) {
+        return (a * c - b * d);
+    }
+
+    public static double determinant3x3(double a, double b, double c,
+            double d, double e, double f,
+            double g, double h, double i) {
+        return (a * e * i + g * b * f + c * d * i - c * e * g - i * d * b - a * h * f);
+    }
+
 }
